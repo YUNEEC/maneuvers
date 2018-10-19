@@ -1,0 +1,3 @@
+[submodule "src/external/Dronecode_sdk"]
+	path = src/external/Dronecode_sdk
+	url = https://github.com/Dronecode/DronecodeSDK.git
