@@ -1,7 +1,8 @@
 //
-// Simple example to demonstrate how to use the Dronecode SDK.
+// Maneuver which tests the RTL mode from several distances and heights. 
+// 
 //
-// Author: Julian Oes <julian@oes.ch>
+// Author: Philipp Andermatt <ph.andermatt@gmail.com>
 
 #include <chrono>
 #include <cstdint>
@@ -9,7 +10,6 @@
 #include <plugins/action/action.h>
 #include <dronecode_sdk.h>
 #include <plugins/telemetry/telemetry.h>
-#include <plugins/log_files/log_files.h>
 #include <iostream>
 #include <thread>
 #include <math.h>
