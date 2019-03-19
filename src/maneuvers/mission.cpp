@@ -9,11 +9,12 @@
 #include <unistd.h>
 #include <future>
 
-#include "plugins/action/action.h"
 #include "dronecode_sdk.h"
+#include "plugins/action/action.h"
 #include "plugins/offboard/offboard.h"
 #include "plugins/telemetry/telemetry.h"
 #include "plugins/mission/mission.h"
+#include "plugins/param/param.h"
 
 using namespace dronecode_sdk;
 using std::chrono::milliseconds;
@@ -160,6 +161,7 @@ int main(int argc, char **argv)
     auto offboard = std::make_shared<Offboard>(system);
     auto telemetry = std::make_shared<Telemetry>(system);
     auto mission = std::make_shared<Mission>(system);
+    auto param = std::make_shared<Param>(system);
 
     while (!telemetry->health_all_ok())
     {
