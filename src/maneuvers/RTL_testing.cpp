@@ -1,6 +1,6 @@
 //
-// Maneuver which tests the RTL mode from several distances and heights. 
-// 
+// Maneuver which tests the RTL mode from several distances and heights.
+//
 //
 // Author: Philipp Andermatt <ph.andermatt@gmail.com>
 
@@ -123,10 +123,10 @@ int arm_and_takeoff(Telemetry *telemetry, Action *action)
 
     // Arm vehicle
     std::cout << "Arming..." << std::endl;
-    const ActionResult arm_result = action->arm();
+    const Action::Result arm_result = action->arm();
 
-    if (arm_result != ActionResult::SUCCESS) {
-        std::cout << ERROR_CONSOLE_TEXT << "Arming failed:" << action_result_str(arm_result)
+    if (arm_result != Action::Result::SUCCESS) {
+        std::cout << ERROR_CONSOLE_TEXT << "Arming failed:" << Action::result_str(arm_result)
                   << NORMAL_CONSOLE_TEXT << std::endl;
         return 1;
     }
@@ -134,17 +134,17 @@ int arm_and_takeoff(Telemetry *telemetry, Action *action)
     // Take off
     auto takeoff_altitude_result = action->get_takeoff_altitude().second;
     std::cout << "Taking off to height " << takeoff_altitude_result << " meters" << std::endl;
-    const ActionResult takeoff_result = action->takeoff();
-    if (takeoff_result != ActionResult::SUCCESS) {
-        std::cout << ERROR_CONSOLE_TEXT << "Takeoff failed:" << action_result_str(takeoff_result)
+    const Action::Result takeoff_result = action->takeoff();
+    if (takeoff_result != Action::Result::SUCCESS) {
+        std::cout << ERROR_CONSOLE_TEXT << "Takeoff failed:" << Action::result_str(takeoff_result)
                   << NORMAL_CONSOLE_TEXT << std::endl;
         return 1;
     }
 
     // wait until drone has reached takeoff height
     while ((action->get_takeoff_altitude().second - 0.2) > telemetry->position().relative_altitude_m) {
-        std::cout << TELEMETRY_CONSOLE_TEXT 
-        << "Relative height: " << telemetry->position().relative_altitude_m 
+        std::cout << TELEMETRY_CONSOLE_TEXT
+        << "Relative height: " << telemetry->position().relative_altitude_m
         <<  NORMAL_CONSOLE_TEXT<< std::endl;
         sleep_for(seconds(1));
     }
@@ -157,8 +157,8 @@ int trigger_RTL(Telemetry *telemetry, Action *action)
 {
     // Make RTL right over home position
     std::cout << "trigger RTL" << std::endl;
-    const ActionResult rtl_result = action->return_to_launch();
-    if (rtl_result != ActionResult::SUCCESS) {
+    const Action::Result rtl_result = action->return_to_launch();
+    if (rtl_result != Action::Result::SUCCESS) {
         //RTL failed, so exit (in reality might send kill command.)
         return 1;
     }
@@ -166,14 +166,14 @@ int trigger_RTL(Telemetry *telemetry, Action *action)
     // We are relying on auto-disarming but let's keep watching the telemetry until it is disarmed
     while (telemetry->armed()) {
         // show height in terminal
-        std::cout << TELEMETRY_CONSOLE_TEXT 
-        << "Relative height: " << telemetry->position().relative_altitude_m 
+        std::cout << TELEMETRY_CONSOLE_TEXT
+        << "Relative height: " << telemetry->position().relative_altitude_m
         <<  NORMAL_CONSOLE_TEXT<< std::endl;
 
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
     std::cout << "Disarmed, ready for next part of maneuver." << std::endl;
-    
+
     return 0;
 }
 
@@ -188,12 +188,12 @@ int goto_setpoint_and_RTL(Telemetry *telemetry, Action *action, double lat_m, do
     auto return_value = arm_and_takeoff(telemetry, action);
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     // send the drone away from home to a new setpoint
-    const ActionResult location_result = action->goto_location(position_setpoint.latitude_deg, position_setpoint.longitude_deg, position_setpoint.absolute_altitude_m, yaw);
-    if (location_result != ActionResult::SUCCESS) {
-        std::cout << ERROR_CONSOLE_TEXT << "going to new location failed failed:" << action_result_str(location_result)
+    const Action::Result location_result = action->goto_location(position_setpoint.latitude_deg, position_setpoint.longitude_deg, position_setpoint.absolute_altitude_m, yaw);
+    if (location_result != Action::Result::SUCCESS) {
+        std::cout << ERROR_CONSOLE_TEXT << "going to new location failed failed:" << Action::result_str(location_result)
                   << NORMAL_CONSOLE_TEXT << std::endl;
         return 1;
     }
@@ -203,13 +203,13 @@ int goto_setpoint_and_RTL(Telemetry *telemetry, Action *action, double lat_m, do
     while (i < 15)
     {
         // show height in terminal
-        std::cout << TELEMETRY_CONSOLE_TEXT 
-        << "Relative height: " << telemetry->position().relative_altitude_m 
+        std::cout << TELEMETRY_CONSOLE_TEXT
+        << "Relative height: " << telemetry->position().relative_altitude_m
         <<  NORMAL_CONSOLE_TEXT<< std::endl;
         sleep_for(seconds(1));
         i++;
     }
-    
+
     return_value = trigger_RTL(telemetry, action);
 
     return return_value;
@@ -224,14 +224,14 @@ int main(int argc, char **argv)
     int return_value = detect_system(argc, argv, dc);
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     System &system = dc.system();
 
     return_value = system_setup(dc, system);
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     auto telemetry = std::make_shared<Telemetry>(system);
     auto action = std::make_shared<Action>(system);
@@ -249,14 +249,14 @@ int main(int argc, char **argv)
     return_value = arm_and_takeoff(telemetry.get(), action.get());
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     // land directly over home position (from takeoff height)
     return_value = trigger_RTL(telemetry.get(), action.get());
-    
+
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     // set a new setpoint away from home
     double lat_m = 3;
@@ -268,7 +268,7 @@ int main(int argc, char **argv)
 
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     // set a new setpoint away from home
     lat_m = 6;
@@ -280,7 +280,7 @@ int main(int argc, char **argv)
 
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     // set a new setpoint away from home
     lat_m = 10;
@@ -289,10 +289,10 @@ int main(int argc, char **argv)
     yaw = 0;
     std::cout << "Fly away more than RTL_CONE_DIST and above RTL_RETURN_ALT" << std::endl;
     return_value = goto_setpoint_and_RTL(telemetry.get(), action.get(), lat_m, long_m, height_above_home, yaw);
-    
+
     if (return_value != 0){
         return return_value;
-    } 
+    }
 
     // set a new setpoint away from home
     lat_m = 3;

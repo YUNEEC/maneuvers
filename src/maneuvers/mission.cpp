@@ -25,11 +25,11 @@ using std::this_thread::sleep_for;
 #define NORMAL_CONSOLE_TEXT "\033[0m"     // Restore normal console colour
 
 // Handles Action's result
-inline void action_error_exit(ActionResult result, const std::string &message)
+inline void action_error_exit(Action::Result result, const std::string &message)
 {
-    if (result != ActionResult::SUCCESS)
+    if (result != Action::Result::SUCCESS)
     {
-        std::cerr << ERROR_CONSOLE_TEXT << message << action_result_str(result)
+        std::cerr << ERROR_CONSOLE_TEXT << message << Action::result_str(result)
                   << NORMAL_CONSOLE_TEXT << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -250,7 +250,7 @@ int main(int argc, char **argv)
     };
 
     // Arm
-    ActionResult arm_result = action->arm();
+    Action::Result arm_result = action->arm();
 
     action_error_exit(arm_result, "Arming failed");
 
@@ -282,11 +282,11 @@ int main(int argc, char **argv)
     {
         // We are done, and can do RTL to go home.
         std::cout << "Commanding RTL" << std::endl;
-        const ActionResult result = action->return_to_launch();
+        const Action::Result result = action->return_to_launch();
 
-        if (result != ActionResult::SUCCESS)
+        if (result != Action::Result::SUCCESS)
         {
-            std::cout << "Failed to command RTL (" << action_result_str(result) << ")" << std::endl;
+            std::cout << "Failed to command RTL (" << Action::result_str(result) << ")" << std::endl;
         }
     }
 
