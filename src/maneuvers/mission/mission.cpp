@@ -9,14 +9,15 @@
 #include <unistd.h>
 #include <future>
 
-#include "dronecode_sdk.h"
 #include "plugins/action/action.h"
 #include "plugins/offboard/offboard.h"
 #include "plugins/telemetry/telemetry.h"
 #include "plugins/mission/mission.h"
 #include "plugins/param/param.h"
+#include "mavsdk.h"
 
-using namespace dronecode_sdk;
+
+using namespace mavsdk;
 using std::chrono::milliseconds;
 using std::chrono::seconds;
 using std::this_thread::sleep_for;
@@ -122,7 +123,7 @@ void usage(std::string bin_name)
 
 int main(int argc, char **argv)
 {
-    DronecodeSDK dc;
+    Mavsdk dc;
     std::string connection_url;
     ConnectionResult connection_result;
 
