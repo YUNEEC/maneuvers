@@ -20,5 +20,5 @@ make [maneuver-name]
 First launch px4-autopilot. 
 To start / launch a maneuver, type from within the build folder:
 ```bash
-./maneuvers/[maneuver-name] udp://:14540
+./maneuvers/[folder-name]/[maneuver-name] udp://:14540
 ```
