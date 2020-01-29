@@ -89,7 +89,7 @@ bool offb_ctrl_attitude(std::shared_ptr<mavsdk::Offboard> offboard, std::shared_
         offboard->set_quaternion_yaw_rate({q.w, q.x, q.y, q.z, 40.f, 0.57f});
         sleep_for(seconds(1)); // Let yaw settle.
 
-    } 
+    }
 
     // Now, stop offboard mode.
     offboard_result = offboard->stop();
@@ -152,12 +152,12 @@ int main(int argc, char **argv)
     auto telemetry = std::make_shared<Telemetry>(system);
     auto param = std::make_shared<Param>(system);
 
-    while (!telemetry->health_all_ok())
-    {
-        std::cout << "Waiting for system to be ready" << std::endl;
-        sleep_for(seconds(3));
-    }
-
+    //while (!telemetry->health_all_ok())
+    //{
+    //    std::cout << "Waiting for system to be ready" << std::endl;
+    //    sleep_for(seconds(3));
+    //}
+//
     std::cout << "System is ready" << std::endl;
 
     Action::Result arm_result = action->arm();
