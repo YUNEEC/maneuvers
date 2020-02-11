@@ -80,13 +80,22 @@ bool offb_ctrl_attitude(std::shared_ptr<mavsdk::Offboard> offboard, std::shared_
     offboard_error_exit(offboard_result, "Offboard start failed");
     offboard_log(offb_mode, "Offboard started");
 
-    for (int i = 0; i < 10; i++) {
+    for (int i = 0; i < 15; i++) {
          // get current attitude
         Telemetry::EulerAngle euler = telemetry->attitude_euler_angle();
         Telemetry::Quaternion q = telemetry->attitude_quaternion();
 
         std::cout << "euler yaw: " << euler.yaw_deg << std::endl;
-        offboard->set_quaternion_yaw_rate({q.w, q.x, q.y, q.z, 40.f, 0.57f});
+
+        if (i > 5 && i < 11) {
+            offboard->set_roll_pitch_altitude({0.0f, 0.0f, -30.0f, 0.f, true});
+        } else if (i > 11) {
+            offboard->set_roll_pitch_altitude({0.0f, 0.0f, 30.0f, 1.f, true});
+        }else {
+            offboard->set_roll_pitch_altitude({0.0f, 0.0f, 30.0f, -1.f, true});
+
+        }
+
         sleep_for(seconds(1)); // Let yaw settle.
 
     }
