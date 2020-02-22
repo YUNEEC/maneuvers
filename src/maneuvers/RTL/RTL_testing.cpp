@@ -8,13 +8,16 @@
 #include <cstdint>
 #include <system.h>
 #include <plugins/action/action.h>
-#include <dronecode_sdk.h>
+//#include <dronecode_sdk.h>
 #include <plugins/telemetry/telemetry.h>
 #include <iostream>
 #include <thread>
 #include <math.h>
 
-using namespace dronecode_sdk;
+#include "mavsdk.h"
+
+
+using namespace mavsdk;
 using namespace std::this_thread;
 using namespace std::chrono;
 
@@ -42,7 +45,7 @@ void component_discovered(ComponentType component_type)
 
 
 
-int detect_system(int argc, char **argv, DronecodeSDK &dc)
+int detect_system(int argc, char **argv, Mavsdk &dc)
 {
     std::string connection_url;
     ConnectionResult connection_result;
@@ -67,7 +70,7 @@ int detect_system(int argc, char **argv, DronecodeSDK &dc)
 
 
 
-int system_setup(DronecodeSDK &dc, System &system)
+int system_setup(Mavsdk &dc, System &system)
 {
     bool discovered_system = false;
 
@@ -219,7 +222,7 @@ int goto_setpoint_and_RTL(Telemetry *telemetry, Action *action, double lat_m, do
 
 int main(int argc, char **argv)
 {
-    DronecodeSDK dc;
+    Mavsdk dc;
 
     int return_value = detect_system(argc, argv, dc);
     if (return_value != 0){
